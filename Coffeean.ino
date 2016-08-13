@@ -31,9 +31,10 @@
 #define DMODE_COFFEE_TEMP 1
 #define DMODE_STEAM_TEMP 2
 #define DMODE_BACKFLUSH 3
-int dModeCount = 4;
-int dModeCurrent = DMODE_BACKFLUSH;
-int dModePrev = DMODE_BACKFLUSH;
+#define DMODE_TEMP_DEBUG 4
+int dModeCount = 5;
+int dModeCurrent = DMODE_TEMP_DEBUG;
+int dModePrev = DMODE_TEMP_DEBUG;
 
 /* WORK MODES */
 #define WMODE_SLEEP 0
@@ -53,6 +54,14 @@ Adafruit_SSD1306 display(OLED_RESET); //128x64, yellow 16 rows
 double currentTemperature = 100;
 double coffeeTemperature = 100;
 double steamTemperature = 140;
+
+/* SETUP */
+long lastTemperatureMeasurement = 0;
+long temperatureMeasurementInterval = 1000;
+double rawTemperature = 0;
+const int tempArraySize = 5;
+double tempArray [tempArraySize];
+int tempArrayPointer = 0;
 
 long brewStartTime = 0;
 long brewDuration = 2 * 1000;
@@ -95,10 +104,10 @@ void setup() {
   //SetDS3231time(0, 10, 14, 6, 7, 2, 2016);
 }
 
-int backFlushCycles = 3;
+const int backFlushCycles = 3;
 int backFlushCurrentCycle = 0;
-int backFlushCycleDuration = 1 * 1000;
-int backFlushCurrentCycleStart = 0;
+const int backFlushCycleDuration = 1 * 3000;
+long backFlushCurrentCycleStart = 0;
 
 void TurnOffRelay(int pin) {
   digitalWrite(pin, HIGH);
@@ -181,4 +190,5 @@ void loop() {
   ProcessButtons();
   RenderDisplay();
   ManageState();
+  ReadTemperature();
 }

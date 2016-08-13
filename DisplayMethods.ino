@@ -25,6 +25,10 @@ void RenderDisplay() {
     case DMODE_BACKFLUSH:
     RenderBackflush();
     break;
+
+    case DMODE_TEMP_DEBUG:
+    RenderTempDebug();
+    break;
   }
   
   RenderTime();
@@ -44,6 +48,36 @@ void RenderCoffeeTemperature() {
   display.println((int)coffeeTemperature);
 }
 
+
+void RenderProgressBar(float percent) {
+  display.drawRect(0,45,128,10,WHITE);
+  display.fillRect(0,45,(int)(128*percent/100),10,WHITE);
+}
+
+void RenderTempDebug() {
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(0, 0);
+  display.println("Temperat.:");
+  
+  display.setTextSize(1);
+  display.setCursor(0, 20);
+  display.println(currentTemperature);
+display.println(rawTemperature);
+
+int displaySize = 3;
+  for (int i = 0; i < tempArraySize; i++) {
+  display.setCursor(40 + (i / displaySize) * 40, (i % displaySize)*10 + 20);
+    if (i == tempArrayPointer)  {
+      display.print(">");
+    } else {
+      display.print(" ");
+    }
+    display.println(tempArray[i]);
+  }
+
+}
+
 void RenderBackflush() {
   display.setTextSize(2);
   display.setTextColor(WHITE);
@@ -51,9 +85,28 @@ void RenderBackflush() {
   display.println("Backflush:");
   display.setTextSize(3);
   display.setCursor(0, 20);
+  
+  if (wModeCurrent == WMODE_COFFEE) {
+    display.print("START?");
+    return;
+  }
+      
   display.print((backFlushCurrentCycle / 2) + 1);
   display.print("/");
   display.println(backFlushCycles);
+
+  display.setTextSize(1);
+  display.setCursor(70, 20);
+  display.println(millis());
+  display.setCursor(70, 30);
+  display.print("S: ");
+  display.println(backFlushCurrentCycleStart);
+  display.setCursor(70, 40);
+  display.print("E: ");
+  display.println(backFlushCurrentCycleStart + backFlushCycleDuration);
+
+  float perc = 100.0 * (millis() - backFlushCurrentCycleStart) / backFlushCycleDuration;
+  RenderProgressBar(perc);
 }
 
 void RenderSteamTemperature() {
