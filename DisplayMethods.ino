@@ -9,28 +9,28 @@ void InitDisplay() {
 void RenderDisplay() {
   display.clearDisplay();
 
-  switch(dModeCurrent) {
+  switch (dModeCurrent) {
     case DMODE_DEBUG:
-    RenderDebug();
-    break;
-    
+      RenderDebug();
+      break;
+
     case DMODE_COFFEE_TEMP:
-    RenderCoffeeTemperature();
-    break;
+      RenderCoffeeTemperature();
+      break;
 
     case DMODE_STEAM_TEMP:
-    RenderSteamTemperature();
-    break;
+      RenderSteamTemperature();
+      break;
 
     case DMODE_BACKFLUSH:
-    RenderBackflush();
-    break;
+      RenderBackflush();
+      break;
 
     case DMODE_TEMP_DEBUG:
-    RenderTempDebug();
-    break;
+      RenderTempDebug();
+      break;
   }
-  
+
   RenderTime();
   RenderTemperature();
   RenderWorkMode();
@@ -50,24 +50,28 @@ void RenderCoffeeTemperature() {
 
 
 void RenderProgressBar(float percent) {
-  display.drawRect(0,45,128,10,WHITE);
-  display.fillRect(0,45,(int)(128*percent/100),10,WHITE);
+  display.drawRect(0, 45, 128, 10, WHITE);
+  display.fillRect(0, 45, (int)(128 * percent / 100), 10, WHITE);
 }
 
 void RenderTempDebug() {
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
-  display.println("Temperat.:");
-  
+  display.print("T: ");
+  display.println(currentTemperature);
+
   display.setTextSize(1);
   display.setCursor(0, 20);
-  display.println(currentTemperature);
-display.println(rawTemperature);
+  display.println("AVG:");
+  display.println(tempArrayAvg);
+  display.println("SD:");
+  display.println(tempArraySD);
+  
 
-int displaySize = 3;
+  int displaySize = 3;
   for (int i = 0; i < tempArraySize; i++) {
-  display.setCursor(40 + (i / displaySize) * 40, (i % displaySize)*10 + 20);
+    display.setCursor(40 + (i / displaySize) * 40, (i % displaySize) * 10 + 20);
     if (i == tempArrayPointer)  {
       display.print(">");
     } else {
@@ -85,12 +89,12 @@ void RenderBackflush() {
   display.println("Backflush:");
   display.setTextSize(3);
   display.setCursor(0, 20);
-  
+
   if (wModeCurrent == WMODE_COFFEE) {
     display.print("START?");
     return;
   }
-      
+
   display.print((backFlushCurrentCycle / 2) + 1);
   display.print("/");
   display.println(backFlushCycles);
@@ -137,7 +141,7 @@ void RenderDebug() {
 void RenderButton(int pin, char* text) {
   if (IsSwitchOn(pin)) {
     display.setTextColor(BLACK, WHITE);
-  } 
+  }
   display.print(text);
   display.setTextColor(WHITE, BLACK);
 }
@@ -150,10 +154,10 @@ void RenderTime() {
   display.setCursor(0, 57);
   display.print(hour);
   display.print(":");
-  if (minute < 10) display.print("0"); 
+  if (minute < 10) display.print("0");
   display.print(minute);
   display.print(":");
-  if (second < 10) display.print("0"); 
+  if (second < 10) display.print("0");
   display.print(second);
 }
 
@@ -162,27 +166,27 @@ void RenderWorkMode() {
   display.setTextColor(WHITE);
   display.setCursor(52, 57);
 
-  switch(wModeCurrent) {
+  switch (wModeCurrent) {
     case WMODE_COFFEE:
-    display.print("COFFEE");
-    break;
+      display.print("COFFEE");
+      break;
     case WMODE_STEAM:
-    display.print("STEAM");
-    break;
+      display.print("STEAM");
+      break;
     case WMODE_SLEEP:
-    display.print("SLEEP");
-    break;
+      display.print("SLEEP");
+      break;
     case WMODE_BACKFLUSH:
-    display.print("FLUSH");
-    break;
+      display.print("FLUSH");
+      break;
     case WMODE_BREWING:
-    display.print("BREW");
-    break;
+      display.print("BREW");
+      break;
     case WMODE_BREWING_FINISHED:
-    display.print("B.FIN.");
-    break;
+      display.print("B.FIN.");
+      break;
   }
-  
+
 }
 
 void RenderTemperature() {

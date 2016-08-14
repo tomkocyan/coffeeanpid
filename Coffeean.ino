@@ -59,9 +59,12 @@ double steamTemperature = 140;
 long lastTemperatureMeasurement = 0;
 long temperatureMeasurementInterval = 1000;
 double rawTemperature = 0;
-const int tempArraySize = 5;
+
+const int tempArraySize = 6;
 double tempArray [tempArraySize];
 int tempArrayPointer = 0;
+double tempArrayAvg = 0;
+double tempArraySD = 0;
 
 long brewStartTime = 0;
 long brewDuration = 2 * 1000;
