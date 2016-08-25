@@ -1,25 +1,18 @@
+/*
 void Beep() {
   tone(PIN_SPEAKER, 1200, 100);
   delay(100);
 }
-
+*/
+/*
 void DoHeartbeat() {
-  /*  if (brewInProgress) {
-      if ( ((int)(millis() / 100)) % 2 == 0) {
-        digitalWrite(PIN_LED, HIGH);
-      } else {
-        digitalWrite(PIN_LED, LOW);
-      }
-    } else { */
   if ( ((int)(millis() / 1000)) % 2 == 0) {
     digitalWrite(PIN_LED, HIGH);
   } else {
     digitalWrite(PIN_LED, LOW);
   }
-  //}
-
 }
-
+*/
 bool IsButtonPushed(int pin) {
   if (digitalRead(pin) == LOW) {
     while (digitalRead(pin) == LOW) {}

@@ -1,5 +1,5 @@
 void SetHeater(double currentTemperature) {
-  Timer1.pwm(PIN_SSR_HEAT, 512);
+  Timer3.pwm(PIN_SSR_HEAT, 512);
 /*
   if (mode == MODE_COFFEE) {
 

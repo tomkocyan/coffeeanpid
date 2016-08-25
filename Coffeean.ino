@@ -1,4 +1,4 @@
-#include "TimerOne.h"
+#include "TimerThree.h"
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -9,20 +9,23 @@
 /* PINS - output (5 TOTAL) */
 #define PIN_RELAY_PUMP 2
 #define PIN_RELAY_VALVE 3
-#define PIN_SSR_HEAT 9
-#define PIN_SPEAKER 7
-#define PIN_LED 7
+
+#define PIN_SSR_HEAT 5
+#define PIN_SSR_GND 6
+//#define PIN_SPEAKER 7
+//#define PIN_LED 7
 
 /* PINS - input (7 TOTAL) */
-#define PIN_BUTTON_MODE 5
-#define PIN_BUTTON_SET 6
-#define PIN_BUTTON_UP 4
-#define PIN_BUTTON_DOWN 7
+#define PIN_BUTTON_MODE 48
+#define PIN_BUTTON_SET 46
+#define PIN_BUTTON_UP 50
+#define PIN_BUTTON_DOWN 52
 #define PIN_SWITCH_BREW 12
 #define PIN_SWITCH_STEAM 13
-#define PIN_WATER_LEVEL 7
+#define PIN_WATER_LEVEL 99
 
-#define PIN_DISPLAY_GND 8
+#define PIN_DISPLAY_GND 19
+
 
 // 7 INPUTS + 5 OUTPUTS + VCC + GND + 2x PT1000 = 16 WIRES
 
@@ -83,7 +86,11 @@ void setup() {
 
   //display
   pinMode(PIN_DISPLAY_GND, OUTPUT);
-  digitalWrite(PIN_DISPLAY_GND, LOW);
+  digitalWrite(PIN_DISPLAY_GND, LOW);    
+  
+  pinMode(PIN_SSR_GND, OUTPUT);
+  digitalWrite(PIN_SSR_GND, LOW);
+
   
   digitalWrite(PIN_BUTTON_MODE, HIGH);
   digitalWrite(PIN_BUTTON_SET, HIGH);
@@ -95,10 +102,11 @@ void setup() {
   //turn off relays
   digitalWrite(PIN_RELAY_PUMP, HIGH);
   digitalWrite(PIN_RELAY_VALVE, HIGH);
-
+/*
   pinMode(PIN_SSR_HEAT, OUTPUT);
   digitalWrite(PIN_SSR_HEAT, HIGH);
-  Timer1.initialize(500000);
+  */
+  Timer3.initialize(500000);
 
   Serial.begin(9600);
 
@@ -190,6 +198,15 @@ void ManageState() {
 void loop() {
   SetHeater(currentTemperature);
 
+    byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
+  ReadDS3231time(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
+  /*
+  if (second % 2 == 0) {
+      digitalWrite(PIN_SSR_HEAT, HIGH);
+  } else {
+    digitalWrite(PIN_SSR_HEAT, LOW);
+  }
+*/
   ProcessButtons();
   RenderDisplay();
   ManageState();
