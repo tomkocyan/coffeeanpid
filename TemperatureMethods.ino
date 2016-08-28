@@ -66,7 +66,7 @@ void ReadTemperature() {
    */
 
   double U = 5; //vstupni napeti (z USB)
-  double Rc = 996; //odpor rezistoru v delici
+  double Rc = 1200; //odpor rezistoru v delici
   
   double analogSum = 0;
 
