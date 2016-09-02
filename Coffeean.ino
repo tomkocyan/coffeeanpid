@@ -6,6 +6,9 @@
 #include <OneWire.h>
 #include <EEPROM.h>
 
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27,16,2);
+
 /* PINS - output (5 TOTAL) */
 #define PIN_RELAY_PUMP 2
 #define PIN_RELAY_VALVE 3
@@ -36,8 +39,8 @@
 #define DMODE_BACKFLUSH 3
 #define DMODE_TEMP_DEBUG 4
 int dModeCount = 5;
-int dModeCurrent = DMODE_TEMP_DEBUG;
-int dModePrev = DMODE_TEMP_DEBUG;
+int dModeCurrent = DMODE_COFFEE_TEMP;
+int dModePrev = DMODE_COFFEE_TEMP;
 
 /* WORK MODES */
 #define WMODE_SLEEP 0
@@ -110,9 +113,13 @@ void setup() {
 
   Serial.begin(9600);
 
-  InitDisplay();
+//  InitDisplay();
 
   //SetDS3231time(0, 10, 14, 6, 7, 2, 2016);
+
+  lcd.init(); // initialize the lcd 
+  lcd.backlight();
+  lcd.print("Hello, world!"); 
 }
 
 const int backFlushCycles = 3;
@@ -211,4 +218,11 @@ void loop() {
   RenderDisplay();
   ManageState();
   ReadTemperature();
+/*
+  if (millis() / 1000 % 2 == 0) {
+    lcd.backlight();
+  } else {
+    lcd.noBacklight();
+  }
+  */
 }

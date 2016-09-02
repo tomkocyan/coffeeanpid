@@ -34,6 +34,7 @@ void ProcessButtons() {
 
   if (IsButtonPushed(PIN_BUTTON_MODE)) {
     dModeCurrent = ++dModeCurrent % dModeCount;
+    lcd.clear();
   }
 
   if (dModeCurrent == DMODE_BACKFLUSH) {

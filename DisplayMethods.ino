@@ -1,13 +1,16 @@
+//https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library/blob/master/LiquidCrystal_I2C.h
 
+/*
 
 void InitDisplay() {
   display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
   display.clearDisplay();
   display.display();
 }
-
+*/
 void RenderDisplay() {
-  display.clearDisplay();
+  //display.clearDisplay();
+  //lcd.clear();
 
   switch (dModeCurrent) {
     case DMODE_DEBUG:
@@ -31,7 +34,7 @@ void RenderDisplay() {
       break;
   }
 
-  RenderTime();
+  //RenderTime();
   RenderTemperature();
   RenderWorkMode();
 
@@ -39,22 +42,29 @@ void RenderDisplay() {
 }
 
 void RenderCoffeeTemperature() {
-  display.setTextSize(2);
+  /*display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
   display.println("Coffee:");
   display.setTextSize(3);
   display.setCursor(40, 20);
-  display.println((int)coffeeTemperature);
+  display.println((int)coffeeTemperature);*/
+  
+  lcd.setCursor(0, 1);
+  lcd.print("> Coffee: ");
+  //lcd.setCursor(0, 1);
+  lcd.print((int)coffeeTemperature);
 }
 
 
 void RenderProgressBar(float percent) {
+  /*
   display.drawRect(0, 45, 128, 10, WHITE);
-  display.fillRect(0, 45, (int)(128 * percent / 100), 10, WHITE);
+  display.fillRect(0, 45, (int)(128 * percent / 100), 10, WHITE);*/
 }
 
 void RenderTempDebug() {
+  /*
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
@@ -79,10 +89,11 @@ void RenderTempDebug() {
     }
     display.println(tempArray[i]);
   }
-
+  */
 }
 
 void RenderBackflush() {
+  /*
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
@@ -111,9 +122,11 @@ void RenderBackflush() {
 
   float perc = 100.0 * (millis() - backFlushCurrentCycleStart) / backFlushCycleDuration;
   RenderProgressBar(perc);
+  */
 }
 
 void RenderSteamTemperature() {
+  /*
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
@@ -121,9 +134,11 @@ void RenderSteamTemperature() {
   display.setTextSize(3);
   display.setCursor(40, 20);
   display.println((int)steamTemperature);
+  */
 }
 
 void RenderDebug() {
+  /*
   display.setTextSize(2);
   display.setTextColor(WHITE);
   display.setCursor(0, 0);
@@ -136,19 +151,34 @@ void RenderDebug() {
   RenderButton(PIN_SWITCH_BREW, "BREW");
   display.print(" ");
   RenderButton(PIN_SWITCH_STEAM, "STEAM");
+  */
 }
 
 void RenderButton(int pin, char* text) {
+  /*
   if (IsSwitchOn(pin)) {
     display.setTextColor(BLACK, WHITE);
   }
   display.print(text);
   display.setTextColor(WHITE, BLACK);
+  */
 }
 
 void RenderTime() {
   byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
   ReadDS3231time(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
+  
+
+  lcd.setCursor(0, 0);
+  lcd.print(hour);
+  lcd.print(":");
+  if (minute < 10) lcd.print("0");
+  lcd.print(minute);
+  lcd.print(":");
+  if (second < 10) lcd.print("0");
+  lcd.print(second);
+  
+  /*
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(0, 57);
@@ -159,9 +189,11 @@ void RenderTime() {
   display.print(":");
   if (second < 10) display.print("0");
   display.print(second);
+  */
 }
 
 void RenderWorkMode() {
+  /*
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(52, 57);
@@ -186,12 +218,14 @@ void RenderWorkMode() {
       display.print("B.FIN.");
       break;
   }
-
+  */
 }
 
 void RenderTemperature() {
+  /*
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(90, 57);
   display.print(currentTemperature);
+  */
 }
