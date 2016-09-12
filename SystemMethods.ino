@@ -31,6 +31,7 @@ bool IsSwitchOn(int pin) {
 
 void ProcessButtons() {
 
+  Serial.println(IsSwitchOn(PIN_SWITCH_BREW));
 
   if (IsButtonPushed(PIN_BUTTON_MODE)) {
     dModeCurrent = ++dModeCurrent % dModeCount;
@@ -48,12 +49,15 @@ void ProcessButtons() {
   if (dModeCurrent == DMODE_COFFEE_TEMP) {
     if (IsButtonPushed(PIN_BUTTON_UP)) {
       coffeeTemperature++;
+      lcd.clear();
     }
     if (IsButtonPushed(PIN_BUTTON_DOWN)) {
       coffeeTemperature--;
+      lcd.clear();
     }
     if (IsButtonPushed(PIN_BUTTON_SET)) {
       coffeeTemperature = 100;
+      lcd.clear();
     }
   }
 

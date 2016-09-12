@@ -35,10 +35,10 @@ void RenderDisplay() {
   }
 
   //RenderTime();
-  RenderTemperature();
-  RenderWorkMode();
+  //RenderTemperature();
+  //RenderWorkMode();
 
-  display.display();
+  //display.display();
 }
 
 void RenderCoffeeTemperature() {
@@ -64,6 +64,32 @@ void RenderProgressBar(float percent) {
 }
 
 void RenderTempDebug() {
+  //lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("SWITCH TEST");
+  lcd.setCursor(0,1);
+
+  if (IsSwitchOn(PIN_SWITCH_BREW)) {
+    lcd.print("BREW ");  
+  } else 
+  {
+    lcd.print("---- ");
+  }
+
+  if (IsSwitchOn(PIN_SWITCH_STEAM)) {
+    lcd.print("STEAM ");  
+  } else 
+  {
+    lcd.print("----- ");
+  }
+
+  if (IsSwitchOn(PIN_SWITCH_WATER)) {
+    lcd.print("WATER ");  
+  } else 
+  {
+    lcd.print("----- ");
+  }
+  
   /*
   display.setTextSize(2);
   display.setTextColor(WHITE);
@@ -197,35 +223,48 @@ void RenderWorkMode() {
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(52, 57);
-
+*/
+lcd.setCursor(0, 0);
   switch (wModeCurrent) {
     case WMODE_COFFEE:
-      display.print("COFFEE");
+      lcd.print("COFFEE");
       break;
     case WMODE_STEAM:
-      display.print("STEAM");
+      lcd.print("STEAM");
       break;
     case WMODE_SLEEP:
-      display.print("SLEEP");
+      lcd.print("SLEEP");
       break;
     case WMODE_BACKFLUSH:
-      display.print("FLUSH");
+      lcd.print("FLUSH");
       break;
     case WMODE_BREWING:
-      display.print("BREW");
+      lcd.print("BREW");
       break;
     case WMODE_BREWING_FINISHED:
-      display.print("B.FIN.");
+      lcd.print("B.FIN.");
       break;
   }
-  */
+  
 }
 
 void RenderTemperature() {
-  /*
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(90, 57);
-  display.print(currentTemperature);
-  */
+
+  
+  if (millis() - lastLcdRefresh > 500) {
+    //lcd.clear();
+    
+    lcd.setCursor(10,0);
+    lcd.print("     ");
+    lcd.setCursor(10,0);
+    lcd.print("98.6*C");
+    
+    //RenderDisplay();
+    lastLcdRefresh = millis();
+  }
+
+  
+  //lcd.setCursor(10, 0);
+  //lcd.print(currentTemperature);
+  //lcd.print(millis());
 }

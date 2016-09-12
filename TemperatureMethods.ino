@@ -72,6 +72,7 @@ void ReadTemperature() {
 
   int cycles = 10;
 
+/*
   for(int i = 0; i < cycles; i++) {
     double val = analogRead(A0); //hodnota prectena na analogovem vstupu
     Serial.print(val);
@@ -82,16 +83,16 @@ void ReadTemperature() {
 
   Serial.print(" => ");
   Serial.print(analogSum);
-  
+*/  
   
   double Uv = (U * analogSum) / 1024; //napeti na PT1000
   double Rv = (Uv * Rc) / (U - Uv); //impedance PT1000
   rawTemperature = GetPlatinumRTD(Rv, 1000); //prectena hodnota
-
+/*
    Serial.print(" => ");
   Serial.print(rawTemperature);
   Serial.println(" C ");
-  
+  */
   //vypocet prumeru poslednich hodnot a smerodatne odchylky
   tempArrayPointer = (tempArrayPointer + 1) % tempArraySize;
   tempArray[tempArrayPointer] = rawTemperature;
