@@ -35,7 +35,7 @@ void RenderDisplay() {
 
 void RenderDebug() {
   lcd.setCursor(0, 0);
-  lcd.print("Home");
+  //lcd.print("Home");
 
   
   lcd.setCursor(0, 1);
@@ -46,6 +46,13 @@ void RenderDebug() {
 
   lcd.print((int)targetTemperature);
   if (targetTemperature < 100) lcd.print(" ");
+
+  lcd.setCursor(10, 0);
+  if (wModeCurrent == WMODE_BREWING) {
+    lcd.print(" ");
+    lcd.print( (1.0 * millis() - brewStartTime) / 1000 );
+  }
+  //brewStartTime + brewDuration
 }
 
 
@@ -174,7 +181,7 @@ void RenderTime() {
 }
 
 void RenderWorkMode() {
-  lcd.setCursor(7, 0);
+  lcd.setCursor(0, 0);
   switch (wModeCurrent) {
     case WMODE_COFFEE:
       lcd.print("COFFEE ");

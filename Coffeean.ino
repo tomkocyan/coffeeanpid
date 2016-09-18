@@ -190,6 +190,7 @@ void ManageState() {
 
     if (brewStartTime + brewDuration < millis()) {
       wModeCurrent = WMODE_BREWING_FINISHED;
+      lcd.clear();
     }
   }
 
