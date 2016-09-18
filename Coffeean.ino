@@ -36,14 +36,15 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 // 7 INPUTS + 5 OUTPUTS + VCC + GND + 2x PT1000 = 16 WIRES
 
 /* DISPLAY MODES */
-#define DMODE_DEBUG 0
+#define DMODE_HOME 0
 #define DMODE_COFFEE_TEMP 1
 #define DMODE_STEAM_TEMP 2
-#define DMODE_BACKFLUSH 3
-#define DMODE_TEMP_DEBUG 4
-int dModeCount = 5;
-int dModeCurrent = DMODE_TEMP_DEBUG;
-int dModePrev = DMODE_TEMP_DEBUG;
+// #define DMODE_BACKFLUSH 3
+#define DMODE_BTN_DEBUG 3
+int dModeCount = 4;
+
+int dModeCurrent = DMODE_HOME;
+int dModePrev = DMODE_HOME;
 
 /* WORK MODES */
 #define WMODE_SLEEP 0
@@ -56,13 +57,16 @@ int wModeCurrent = WMODE_COFFEE;
 int wModePrev = WMODE_COFFEE;
 
 /* display */
-#define OLED_RESET 5 //
+// #define OLED_RESET 5 //
 // Adafruit_SSD1306 display(OLED_RESET); //128x64, yellow 16 rows
 
 /* VARIABLES */
 double currentTemperature = 100;
 double coffeeTemperature = 100;
 double steamTemperature = 140;
+
+#define T_MAX 180
+#define T_MIN 15
 
 /* SETUP */
 long lastTemperatureMeasurement = 0;
@@ -90,7 +94,7 @@ void setup() {
   pinMode(PIN_BUTTON_SET, INPUT);
   pinMode(PIN_BUTTON_UP, INPUT);
   pinMode(PIN_BUTTON_DOWN, INPUT);
-  
+
   pinMode(PIN_SWITCH_STEAM, INPUT);
   pinMode(PIN_SWITCH_BREW, INPUT);
   pinMode(PIN_SWITCH_WATER, INPUT);
@@ -105,7 +109,7 @@ void setup() {
   pinMode(PIN_SWITCH_GND, OUTPUT);
   digitalWrite(PIN_SWITCH_GND, LOW);
 
- 
+
 
   digitalWrite(PIN_BUTTON_MODE, HIGH);
   digitalWrite(PIN_BUTTON_SET, HIGH);

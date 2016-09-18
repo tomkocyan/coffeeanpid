@@ -1,36 +1,27 @@
 //https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library/blob/master/LiquidCrystal_I2C.h
 
-/*
-
-void InitDisplay() {
-  display.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3D (for the 128x64)
-  display.clearDisplay();
-  display.display();
-}
-*/
 void RenderDisplay() {
-  //display.clearDisplay();
-  //lcd.clear();
-
   switch (dModeCurrent) {
-    case DMODE_DEBUG:
+    case DMODE_HOME:
       RenderDebug();
       break;
 
     case DMODE_COFFEE_TEMP:
+      RenderMenuTitle();
       RenderCoffeeTemperature();
       break;
 
     case DMODE_STEAM_TEMP:
+      RenderMenuTitle();
       RenderSteamTemperature();
       break;
+    /*
+            case DMODE_BACKFLUSH:
+              RenderBackflush();
+              break; */
 
-    case DMODE_BACKFLUSH:
-      RenderBackflush();
-      break;
-
-    case DMODE_TEMP_DEBUG:
-      RenderTempDebug();
+    case DMODE_BTN_DEBUG:
+      RenderBtnDebug();
       break;
   }
 
@@ -41,19 +32,34 @@ void RenderDisplay() {
   //display.display();
 }
 
-void RenderCoffeeTemperature() {
-  /*display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.println("Coffee:");
-  display.setTextSize(3);
-  display.setCursor(40, 20);
-  display.println((int)coffeeTemperature);*/
+void RenderDebug() {
+  lcd.setCursor(0, 0);
+  lcd.print("Home");
+
+  lcd.print(" ");
+  lcd.print(millis());
   
   lcd.setCursor(0, 1);
+  if (currentTemperature < 100) lcd.print(" ");
+  lcd.print(currentTemperature);
+}
+
+
+void RenderMenuTitle() {
+  lcd.setCursor(0, 0);
+  lcd.print("SETTINGS");
+}
+
+void RenderCoffeeTemperature() {
+  lcd.setCursor(0, 1);
   lcd.print("> Coffee: ");
-  //lcd.setCursor(0, 1);
   lcd.print((int)coffeeTemperature);
+}
+
+void RenderSteamTemperature() {
+  lcd.setCursor(0, 1);
+  lcd.print("> Steam: ");
+  lcd.print((int)steamTemperature);
 }
 
 
@@ -63,59 +69,32 @@ void RenderProgressBar(float percent) {
   display.fillRect(0, 45, (int)(128 * percent / 100), 10, WHITE);*/
 }
 
-void RenderTempDebug() {
+void RenderBtnDebug() {
   //lcd.clear();
-  lcd.setCursor(0,0);
+  lcd.setCursor(0, 0);
   lcd.print("SWITCH TEST");
-  lcd.setCursor(0,1);
+  lcd.setCursor(0, 1);
 
   if (IsSwitchOn(PIN_SWITCH_BREW)) {
-    lcd.print("BREW ");  
-  } else 
+    lcd.print("BREW ");
+  } else
   {
     lcd.print("---- ");
   }
 
   if (IsSwitchOn(PIN_SWITCH_STEAM)) {
-    lcd.print("STEAM ");  
-  } else 
+    lcd.print("STEAM ");
+  } else
   {
     lcd.print("----- ");
   }
 
   if (IsSwitchOn(PIN_SWITCH_WATER)) {
-    lcd.print("WATER ");  
-  } else 
+    lcd.print("WATER ");
+  } else
   {
     lcd.print("----- ");
   }
-  
-  /*
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.print("T: ");
-  display.println(currentTemperature);
-
-  display.setTextSize(1);
-  display.setCursor(0, 20);
-  display.println("AVG:");
-  display.println(tempArrayAvg);
-  display.println("SD:");
-  display.println(tempArraySD);
-  
-
-  int displaySize = 3;
-  for (int i = 0; i < tempArraySize; i++) {
-    display.setCursor(40 + (i / displaySize) * 40, (i % displaySize) * 10 + 20);
-    if (i == tempArrayPointer)  {
-      display.print(">");
-    } else {
-      display.print(" ");
-    }
-    display.println(tempArray[i]);
-  }
-  */
 }
 
 void RenderBackflush() {
@@ -151,34 +130,6 @@ void RenderBackflush() {
   */
 }
 
-void RenderSteamTemperature() {
-  /*
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.println("Steam:");
-  display.setTextSize(3);
-  display.setCursor(40, 20);
-  display.println((int)steamTemperature);
-  */
-}
-
-void RenderDebug() {
-  /*
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.println("Time:");
-  display.setCursor(20, 20);
-  display.println(millis());
-  int pos = (millis() / 10) % 128;
-  display.drawLine(pos, 50, pos, 60, WHITE);
-
-  RenderButton(PIN_SWITCH_BREW, "BREW");
-  display.print(" ");
-  RenderButton(PIN_SWITCH_STEAM, "STEAM");
-  */
-}
 
 void RenderButton(int pin, char* text) {
   /*
@@ -193,7 +144,7 @@ void RenderButton(int pin, char* text) {
 void RenderTime() {
   byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
   ReadDS3231time(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
-  
+
 
   lcd.setCursor(0, 0);
   lcd.print(hour);
@@ -203,7 +154,7 @@ void RenderTime() {
   lcd.print(":");
   if (second < 10) lcd.print("0");
   lcd.print(second);
-  
+
   /*
   display.setTextSize(1);
   display.setTextColor(WHITE);
@@ -223,8 +174,8 @@ void RenderWorkMode() {
   display.setTextSize(1);
   display.setTextColor(WHITE);
   display.setCursor(52, 57);
-*/
-lcd.setCursor(0, 0);
+  */
+  lcd.setCursor(0, 0);
   switch (wModeCurrent) {
     case WMODE_COFFEE:
       lcd.print("COFFEE");
@@ -245,25 +196,25 @@ lcd.setCursor(0, 0);
       lcd.print("B.FIN.");
       break;
   }
-  
+
 }
 
 void RenderTemperature() {
 
-  
+
   if (millis() - lastLcdRefresh > 500) {
     //lcd.clear();
-    
-    lcd.setCursor(10,0);
+
+    lcd.setCursor(10, 0);
     lcd.print("     ");
-    lcd.setCursor(10,0);
+    lcd.setCursor(10, 0);
     lcd.print("98.6*C");
-    
+
     //RenderDisplay();
     lastLcdRefresh = millis();
   }
 
-  
+
   //lcd.setCursor(10, 0);
   //lcd.print(currentTemperature);
   //lcd.print(millis());
