@@ -4,6 +4,7 @@ void RenderDisplay() {
   switch (dModeCurrent) {
     case DMODE_HOME:
       RenderDebug();
+      RenderWorkMode();
       break;
 
     case DMODE_COFFEE_TEMP:
@@ -36,12 +37,15 @@ void RenderDebug() {
   lcd.setCursor(0, 0);
   lcd.print("Home");
 
-  lcd.print(" ");
-  lcd.print(millis());
   
   lcd.setCursor(0, 1);
   if (currentTemperature < 100) lcd.print(" ");
   lcd.print(currentTemperature);
+
+  lcd.print(" => ");
+
+  lcd.print((int)targetTemperature);
+  if (targetTemperature < 100) lcd.print(" ");
 }
 
 
@@ -170,52 +174,25 @@ void RenderTime() {
 }
 
 void RenderWorkMode() {
-  /*
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(52, 57);
-  */
-  lcd.setCursor(0, 0);
+  lcd.setCursor(7, 0);
   switch (wModeCurrent) {
     case WMODE_COFFEE:
-      lcd.print("COFFEE");
+      lcd.print("COFFEE ");
       break;
     case WMODE_STEAM:
-      lcd.print("STEAM");
+      lcd.print("STEAM  ");
       break;
     case WMODE_SLEEP:
-      lcd.print("SLEEP");
+      lcd.print("SLEEP  ");
       break;
     case WMODE_BACKFLUSH:
-      lcd.print("FLUSH");
+      lcd.print("FLUSH  ");
       break;
     case WMODE_BREWING:
-      lcd.print("BREW");
+      lcd.print("BREW   ");
       break;
     case WMODE_BREWING_FINISHED:
       lcd.print("B.FIN.");
       break;
   }
-
-}
-
-void RenderTemperature() {
-
-
-  if (millis() - lastLcdRefresh > 500) {
-    //lcd.clear();
-
-    lcd.setCursor(10, 0);
-    lcd.print("     ");
-    lcd.setCursor(10, 0);
-    lcd.print("98.6*C");
-
-    //RenderDisplay();
-    lastLcdRefresh = millis();
-  }
-
-
-  //lcd.setCursor(10, 0);
-  //lcd.print(currentTemperature);
-  //lcd.print(millis());
 }

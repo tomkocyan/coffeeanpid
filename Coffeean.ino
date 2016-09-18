@@ -64,6 +64,7 @@ int wModePrev = WMODE_COFFEE;
 double currentTemperature = 100;
 double coffeeTemperature = 100;
 double steamTemperature = 140;
+double targetTemperature = 0;
 
 #define T_MAX 180
 #define T_MIN 15
@@ -82,8 +83,6 @@ double tempArraySD = 0;
 long brewStartTime = 0;
 long brewDuration = 2 * 1000;
 
-
-long lastLcdRefresh = 0;
 
 void setup() {
   pinMode(PIN_RELAY_PUMP, OUTPUT);
@@ -138,8 +137,6 @@ void setup() {
   lcd.backlight();
   lcd.print("COFFEAN PID!");
   lcd.clear();
-
-  lastLcdRefresh = millis();
 }
 
 const int backFlushCycles = 3;
@@ -159,6 +156,7 @@ void TurnOnRelay(int pin) {
 void ManageState() {
 
   if (wModeCurrent == WMODE_COFFEE) {
+    targetTemperature = coffeeTemperature;
     TurnOffRelay(PIN_RELAY_PUMP);
     TurnOffRelay(PIN_RELAY_VALVE);
 
@@ -172,6 +170,7 @@ void ManageState() {
   }
 
   if (wModeCurrent == WMODE_STEAM) {
+    targetTemperature = steamTemperature;
     TurnOffRelay(PIN_RELAY_PUMP);
     TurnOffRelay(PIN_RELAY_VALVE);
 
@@ -181,6 +180,7 @@ void ManageState() {
   }
 
   if (wModeCurrent == WMODE_BREWING) {
+    targetTemperature = coffeeTemperature;
     TurnOnRelay(PIN_RELAY_PUMP);
     TurnOnRelay(PIN_RELAY_VALVE);
 
@@ -213,6 +213,7 @@ void ManageState() {
   }
 
   if (wModeCurrent == WMODE_BREWING_FINISHED) {
+    targetTemperature = coffeeTemperature;
     TurnOffRelay(PIN_RELAY_PUMP);
     TurnOffRelay(PIN_RELAY_VALVE);
 
