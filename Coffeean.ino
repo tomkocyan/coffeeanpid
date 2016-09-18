@@ -1,10 +1,13 @@
 #include "TimerThree.h"
 #include <SPI.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+/* #include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h> */
 #include <OneWire.h>
 #include <EEPROM.h>
+
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 /* PINS - output (5 TOTAL) */
 #define PIN_RELAY_PUMP 2
@@ -16,13 +19,16 @@
 //#define PIN_LED 7
 
 /* PINS - input (7 TOTAL) */
-#define PIN_BUTTON_MODE 48
-#define PIN_BUTTON_SET 46
-#define PIN_BUTTON_UP 50
-#define PIN_BUTTON_DOWN 52
-#define PIN_SWITCH_BREW 12
-#define PIN_SWITCH_STEAM 13
-#define PIN_WATER_LEVEL 99
+#define PIN_BUTTON_MODE 50
+#define PIN_BUTTON_SET 48
+#define PIN_BUTTON_UP 52
+#define PIN_BUTTON_DOWN 46
+
+#define PIN_SWITCH_BREW 42
+#define PIN_SWITCH_STEAM 38
+#define PIN_SWITCH_WATER 34
+#define PIN_SWITCH_GND 30
+
 
 #define PIN_DISPLAY_GND 19
 
@@ -51,7 +57,7 @@ int wModePrev = WMODE_COFFEE;
 
 /* display */
 #define OLED_RESET 5 //
-Adafruit_SSD1306 display(OLED_RESET); //128x64, yellow 16 rows
+// Adafruit_SSD1306 display(OLED_RESET); //128x64, yellow 16 rows
 
 /* VARIABLES */
 double currentTemperature = 100;
@@ -72,6 +78,9 @@ double tempArraySD = 0;
 long brewStartTime = 0;
 long brewDuration = 2 * 1000;
 
+
+long lastLcdRefresh = 0;
+
 void setup() {
   pinMode(PIN_RELAY_PUMP, OUTPUT);
   pinMode(PIN_RELAY_VALVE, OUTPUT);
@@ -81,44 +90,59 @@ void setup() {
   pinMode(PIN_BUTTON_SET, INPUT);
   pinMode(PIN_BUTTON_UP, INPUT);
   pinMode(PIN_BUTTON_DOWN, INPUT);
+  
   pinMode(PIN_SWITCH_STEAM, INPUT);
   pinMode(PIN_SWITCH_BREW, INPUT);
+  pinMode(PIN_SWITCH_WATER, INPUT);
 
   //display
   pinMode(PIN_DISPLAY_GND, OUTPUT);
-  digitalWrite(PIN_DISPLAY_GND, LOW);    
-  
+  digitalWrite(PIN_DISPLAY_GND, LOW);
+
   pinMode(PIN_SSR_GND, OUTPUT);
   digitalWrite(PIN_SSR_GND, LOW);
 
-  
+  pinMode(PIN_SWITCH_GND, OUTPUT);
+  digitalWrite(PIN_SWITCH_GND, LOW);
+
+ 
+
   digitalWrite(PIN_BUTTON_MODE, HIGH);
   digitalWrite(PIN_BUTTON_SET, HIGH);
   digitalWrite(PIN_BUTTON_UP, HIGH);
   digitalWrite(PIN_BUTTON_DOWN, HIGH);
   digitalWrite(PIN_SWITCH_STEAM, HIGH);
   digitalWrite(PIN_SWITCH_BREW, HIGH);
+  digitalWrite(PIN_SWITCH_WATER, HIGH);
 
   //turn off relays
   digitalWrite(PIN_RELAY_PUMP, HIGH);
   digitalWrite(PIN_RELAY_VALVE, HIGH);
-/*
-  pinMode(PIN_SSR_HEAT, OUTPUT);
-  digitalWrite(PIN_SSR_HEAT, HIGH);
-  */
+  /*
+    pinMode(PIN_SSR_HEAT, OUTPUT);
+    digitalWrite(PIN_SSR_HEAT, HIGH);
+    */
   Timer3.initialize(500000);
 
   Serial.begin(9600);
 
-  InitDisplay();
+  //  InitDisplay();
 
   //SetDS3231time(0, 10, 14, 6, 7, 2, 2016);
+
+  lcd.init(); // initialize the lcd
+  lcd.backlight();
+  lcd.print("COFFEAN PID!");
+  lcd.clear();
+
+  lastLcdRefresh = millis();
 }
 
 const int backFlushCycles = 3;
 int backFlushCurrentCycle = 0;
 const int backFlushCycleDuration = 1 * 3000;
 long backFlushCurrentCycleStart = 0;
+
 
 void TurnOffRelay(int pin) {
   digitalWrite(pin, HIGH);
@@ -194,11 +218,13 @@ void ManageState() {
   }
 }
 
+
+
 // the loop function runs over and over again forever
 void loop() {
   SetHeater(currentTemperature);
 
-    byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
+  byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
   ReadDS3231time(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
   /*
   if (second % 2 == 0) {
@@ -206,9 +232,18 @@ void loop() {
   } else {
     digitalWrite(PIN_SSR_HEAT, LOW);
   }
-*/
+  */
   ProcessButtons();
+
   RenderDisplay();
+
   ManageState();
   ReadTemperature();
+  /*
+    if (millis() / 1000 % 2 == 0) {
+      lcd.backlight();
+    } else {
+      lcd.noBacklight();
+    }
+    */
 }
