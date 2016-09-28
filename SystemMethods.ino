@@ -20,7 +20,7 @@ void ProcessButtons() {
     dModeCurrent = ++dModeCurrent % dModeCount;
     lcd.clear();
   }
-/*
+
   if (dModeCurrent == DMODE_BACKFLUSH) {
     if (IsButtonPushed(PIN_BUTTON_SET)) {
       wModeCurrent = WMODE_BACKFLUSH;
@@ -28,7 +28,7 @@ void ProcessButtons() {
       backFlushCurrentCycleStart = millis();
     }
   }
-*/
+
   if (dModeCurrent == DMODE_COFFEE_TEMP) {
     if (IsButtonPushed(PIN_BUTTON_UP)) {
       coffeeTemperature++;

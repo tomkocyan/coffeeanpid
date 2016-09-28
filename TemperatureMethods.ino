@@ -71,9 +71,6 @@ void ReadTemperature() {
   int cycles = 10;
   double Uv = (U * analogSum) / 1024; //napeti na PT1000
   double Rv = (Uv * Rc) / (U - Uv); //impedance PT1000
-
-  Serial.print("U: ");
-  Serial.println(Uv);
   
   rawTemperature = GetPlatinumRTD(Rv, 1000); //prectena hodnota
   //rawTemperature = 90.0 + 0.1 * (millis() % 10);

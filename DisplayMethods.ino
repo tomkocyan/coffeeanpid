@@ -16,10 +16,10 @@ void RenderDisplay() {
       RenderMenuTitle();
       RenderSteamTemperature();
       break;
-    /*
-            case DMODE_BACKFLUSH:
-              RenderBackflush();
-              break; */
+
+    case DMODE_BACKFLUSH:
+      RenderBackflush();
+      break;
 
     case DMODE_BTN_DEBUG:
       RenderBtnDebug();
@@ -129,36 +129,19 @@ void RenderTmpDebug() {
 
 
 void RenderBackflush() {
-  /*
-  display.setTextSize(2);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 0);
-  display.println("Backflush:");
-  display.setTextSize(3);
-  display.setCursor(0, 20);
+  lcd.setCursor(0, 0);
+  lcd.print("BACKFLUSH");
+  lcd.setCursor(0, 1);
 
   if (wModeCurrent == WMODE_COFFEE) {
-    display.print("START?");
+    lcd.print("START?");
     return;
   }
 
-  display.print((backFlushCurrentCycle / 2) + 1);
-  display.print("/");
-  display.println(backFlushCycles);
-
-  display.setTextSize(1);
-  display.setCursor(70, 20);
-  display.println(millis());
-  display.setCursor(70, 30);
-  display.print("S: ");
-  display.println(backFlushCurrentCycleStart);
-  display.setCursor(70, 40);
-  display.print("E: ");
-  display.println(backFlushCurrentCycleStart + backFlushCycleDuration);
-
-  float perc = 100.0 * (millis() - backFlushCurrentCycleStart) / backFlushCycleDuration;
-  RenderProgressBar(perc);
-  */
+  lcd.print((backFlushCurrentCycle / 2) + 1);
+  lcd.print("/");
+  lcd.println(backFlushCycles);
+  lcd.print("   ");
 }
 
 

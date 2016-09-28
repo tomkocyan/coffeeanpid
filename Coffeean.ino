@@ -7,16 +7,12 @@
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-/* PINS - output (5 TOTAL) */
+/* PINS - output */
 #define PIN_RELAY_PUMP 6
 #define PIN_RELAY_VALVE 7
-
 #define PIN_SSR_HEAT 5
-//#define PIN_SSR_GND 6
-//#define PIN_SPEAKER 7
-//#define PIN_LED 7
 
-/* PINS - input (7 TOTAL) */
+/* PINS - input */
 #define PIN_BUTTON_MODE 50
 #define PIN_BUTTON_SET 48
 #define PIN_BUTTON_UP 52
@@ -25,8 +21,12 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define PIN_SWITCH_BREW 38
 #define PIN_SWITCH_STEAM 34
 #define PIN_SWITCH_WATER 42
-#define PIN_SWITCH_GND 30
 
+// PINS - grounds
+#define PIN_SWITCH_GND 30
+#define PIN_DISPLAY_GND 19
+
+/* Heat modes */
 #define HMODE_CONST 0
 #define HMODE_FULL_HEAT 0
 #define HMODE_COOLING 0
@@ -34,12 +34,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define HMODE_EMERGENCY 0
 #define HMODE_MAX_COOLING 0
 
-#define PIN_DISPLAY_GND 19
-
-
-// 7 INPUTS + 5 OUTPUTS + VCC + GND + 2x PT1000 = 16 WIRES
-
-/* DISPLAY MODES */
+/* Display modes */
 #define DMODE_HOME 0
 #define DMODE_COFFEE_TEMP 1
 #define DMODE_STEAM_TEMP 2
@@ -47,43 +42,46 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define DMODE_TMP_DEBUG 4
 #define DMODE_BACKFLUSH 5
 
-int dModeCount = 6;
-
-int dModeCurrent = DMODE_TMP_DEBUG;
-int dModePrev = DMODE_TMP_DEBUG;
-
-/* WORK MODES */
+/* Work modes */
 #define WMODE_SLEEP 0
 #define WMODE_COFFEE 1
 #define WMODE_STEAM 2
 #define WMODE_BACKFLUSH 3
 #define WMODE_BREWING 4
 #define WMODE_BREWING_FINISHED 5
-int wModeCurrent = WMODE_COFFEE;
-int wModePrev = WMODE_COFFEE;
 
-/* VARIABLES */
+/* Variables */
 double currentTemperature = 100;
 double coffeeTemperature = 100;
 double steamTemperature = 140;
 double targetTemperature = 0;
-
-int hModeCurrent = 0;
 int pwmInterval = 0;
 
-/* SETUP */
-long lastTemperatureMeasurement = 0;
-long temperatureMeasurementInterval = 1000;
-double rawTemperature = 0;
+/* Initial modes */
+int dModeCurrent = DMODE_TMP_DEBUG;
+int dModeCount = 6;
+int wModeCurrent = WMODE_COFFEE;
+int hModeCurrent = 0;
 
+/* Temperature variables */
+double rawTemperature = 0;
+long temperatureMeasurementInterval = 1000;
+long lastTemperatureMeasurement = 0;
 const int tempArraySize = 6;
 double tempArray [tempArraySize];
 int tempArrayPointer = 0;
 double tempArrayAvg = 0;
 double tempArraySD = 0;
 
+/* Brew variables */
 long brewStartTime = 0;
 int brewDuration = 30000;
+
+/* Backflush variables */
+const int backFlushCycles = 3;
+int backFlushCurrentCycle = 0;
+const int backFlushCycleDuration = 10000;
+long backFlushCurrentCycleStart = 0;
 
 void setup() {
   //relays
@@ -131,12 +129,6 @@ void setup() {
   //serial init
   Serial.begin(9600);
 }
-
-const int backFlushCycles = 3;
-int backFlushCurrentCycle = 0;
-const int backFlushCycleDuration = 10000;
-long backFlushCurrentCycleStart = 0;
-
 
 void ManageState() {
 
