@@ -67,13 +67,16 @@ void ReadTemperature() {
 
   double U = 5; //vstupni napeti (z USB)
   double Rc = 1200; //odpor rezistoru v delici
-  double analogSum = 0;
+  double analogSum = analogRead(A0);
   int cycles = 10;
   double Uv = (U * analogSum) / 1024; //napeti na PT1000
   double Rv = (Uv * Rc) / (U - Uv); //impedance PT1000
+
+  Serial.print("U: ");
+  Serial.println(Uv);
   
-  //rawTemperature = GetPlatinumRTD(Rv, 1000); //prectena hodnota
-  rawTemperature = 90.0 + 0.1 * (millis() % 10);
+  rawTemperature = GetPlatinumRTD(Rv, 1000); //prectena hodnota
+  //rawTemperature = 90.0 + 0.1 * (millis() % 10);
 
   //vypocet prumeru poslednich hodnot a smerodatne odchylky
   tempArrayPointer = (tempArrayPointer + 1) % tempArraySize;

@@ -24,6 +24,12 @@ void RenderDisplay() {
     case DMODE_BTN_DEBUG:
       RenderBtnDebug();
       break;
+
+    case DMODE_TMP_DEBUG:
+      RenderTmpDebug();
+      break;
+
+
   }
 
   //RenderTime();
@@ -37,7 +43,7 @@ void RenderDebug() {
   lcd.setCursor(0, 0);
   //lcd.print("Home");
 
-  
+
   lcd.setCursor(0, 1);
   if (currentTemperature < 100) lcd.print(" ");
   lcd.print(currentTemperature);
@@ -107,6 +113,20 @@ void RenderBtnDebug() {
     lcd.print("----- ");
   }
 }
+
+void RenderTmpDebug() {
+  //lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("TEMPER. DEBUG");
+  lcd.setCursor(0, 1);
+
+  lcd.print("P/");
+  lcd.print(pwmInterval);
+  lcd.print("  T/");
+  lcd.print(currentTemperature);
+  lcd.print("   ");
+}
+
 
 void RenderBackflush() {
   /*
