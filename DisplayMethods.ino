@@ -28,8 +28,6 @@ void RenderDisplay() {
       break;
 
     case DMODE_BTN_DEBUG:
-      RenderMenuTitle();
-      lcd.setCursor(0, 1);
       RenderBtnDebug();
       break;
 
@@ -70,6 +68,7 @@ void RenderSteamTemperature() {
 
 void RenderBtnDebug() {
   lcd.print("SWITCH TEST");
+  lcd.setCursor(0, 1);
 
   if (IsSwitchOn(PIN_SWITCH_BREW)) {
     lcd.print("BREW ");
@@ -150,6 +149,9 @@ void RenderWorkMode() {
       break;
     case WMODE_BREWING_FINISHED:
       lcd.print("B.FIN.");
+      break;
+    case WMODE_WATER:
+      lcd.print("WATER ");
       break;
   }
 }

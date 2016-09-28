@@ -8,9 +8,9 @@
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 /* PINS - output */
-#define PIN_RELAY_PUMP 6
-#define PIN_RELAY_VALVE 7
 #define PIN_SSR_HEAT 5
+#define PIN_SSR_VALVE 6
+#define PIN_SSR_PUMP 7
 
 /* PINS - input */
 #define PIN_BUTTON_MODE 50
@@ -49,6 +49,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define WMODE_BACKFLUSH 3
 #define WMODE_BREWING 4
 #define WMODE_BREWING_FINISHED 5
+#define WMODE_WATER 6
 
 /* Variables */
 double currentTemperature = 100;
@@ -78,15 +79,15 @@ long brewStartTime = 0;
 int brewDuration = 30000;
 
 /* Backflush variables */
-const int backFlushCycles = 3;
+const int backFlushCycles = 10;
 int backFlushCurrentCycle = 0;
 const int backFlushCycleDuration = 10000;
 long backFlushCurrentCycleStart = 0;
 
 void setup() {
   //relays
-  pinMode(PIN_RELAY_PUMP, OUTPUT);
-  pinMode(PIN_RELAY_VALVE, OUTPUT);
+  pinMode(PIN_SSR_PUMP, OUTPUT);
+  pinMode(PIN_SSR_VALVE, OUTPUT);
   Timer3.initialize(500000);
 
   //buttons
@@ -114,8 +115,8 @@ void setup() {
   digitalWrite(PIN_DISPLAY_GND, LOW);
 
   //turn off relays
-  digitalWrite(PIN_RELAY_PUMP, LOW);
-  digitalWrite(PIN_RELAY_VALVE, LOW);
+  digitalWrite(PIN_SSR_PUMP, LOW);
+  digitalWrite(PIN_SSR_VALVE, LOW);
 
   //display
   lcd.init(); // initialize the lcd

@@ -14,12 +14,11 @@ bool IsSwitchOn(int pin) {
   return false;
 }
 
-void ManageState() {
-
+void ManageState() {  
   if (wModeCurrent == WMODE_COFFEE) {
     targetTemperature = coffeeTemperature;
-    TurnOffRelay(PIN_RELAY_PUMP);
-    TurnOffRelay(PIN_RELAY_VALVE);
+    TurnOffRelay(PIN_SSR_PUMP);
+    TurnOffRelay(PIN_SSR_VALVE);
 
     if (IsSwitchOn(PIN_SWITCH_STEAM)) {
       wModeCurrent = WMODE_STEAM;
@@ -28,12 +27,25 @@ void ManageState() {
       wModeCurrent = WMODE_BREWING;
       brewStartTime = millis();
     }
+    if (IsSwitchOn(PIN_SWITCH_WATER)) {
+      wModeCurrent = WMODE_WATER;
+    }
+  }
+
+  if (wModeCurrent == WMODE_WATER) {
+    targetTemperature = coffeeTemperature;
+    TurnOnRelay(PIN_SSR_PUMP);
+    TurnOffRelay(PIN_SSR_VALVE);
+
+    if (!IsSwitchOn(PIN_SWITCH_WATER)) {
+      wModeCurrent = WMODE_COFFEE;
+    }
   }
 
   if (wModeCurrent == WMODE_STEAM) {
     targetTemperature = steamTemperature;
-    TurnOffRelay(PIN_RELAY_PUMP);
-    TurnOffRelay(PIN_RELAY_VALVE);
+    TurnOffRelay(PIN_SSR_PUMP);
+    TurnOffRelay(PIN_SSR_VALVE);
 
     if (!IsSwitchOn(PIN_SWITCH_STEAM)) {
       wModeCurrent = WMODE_COFFEE;
@@ -42,8 +54,8 @@ void ManageState() {
 
   if (wModeCurrent == WMODE_BREWING) {
     targetTemperature = coffeeTemperature;
-    TurnOnRelay(PIN_RELAY_PUMP);
-    TurnOnRelay(PIN_RELAY_VALVE);
+    TurnOnRelay(PIN_SSR_PUMP);
+    TurnOnRelay(PIN_SSR_VALVE);
 
     if (!IsSwitchOn(PIN_SWITCH_BREW)) {
       wModeCurrent = WMODE_COFFEE;
@@ -62,11 +74,11 @@ void ManageState() {
     }
 
     if (backFlushCurrentCycle % 2 == 0) {
-      TurnOnRelay(PIN_RELAY_PUMP);
-      TurnOnRelay(PIN_RELAY_VALVE);
+      TurnOnRelay(PIN_SSR_PUMP);
+      TurnOnRelay(PIN_SSR_VALVE);
     } else {
-      TurnOffRelay(PIN_RELAY_PUMP);
-      TurnOffRelay(PIN_RELAY_VALVE);
+      TurnOffRelay(PIN_SSR_PUMP);
+      TurnOffRelay(PIN_SSR_VALVE);
     }
     if (IsButtonPushed(PIN_BUTTON_SET) || backFlushCurrentCycle >= backFlushCycles * 2 - 1) {
       wModeCurrent = WMODE_COFFEE;
@@ -76,8 +88,8 @@ void ManageState() {
 
   if (wModeCurrent == WMODE_BREWING_FINISHED) {
     targetTemperature = coffeeTemperature;
-    TurnOffRelay(PIN_RELAY_PUMP);
-    TurnOffRelay(PIN_RELAY_VALVE);
+    TurnOffRelay(PIN_SSR_PUMP);
+    TurnOffRelay(PIN_SSR_VALVE);
 
     if (!IsSwitchOn(PIN_SWITCH_BREW)) {
       wModeCurrent = WMODE_COFFEE;
