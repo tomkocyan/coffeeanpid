@@ -14,6 +14,77 @@ bool IsSwitchOn(int pin) {
   return false;
 }
 
+void ManageState() {
+
+  if (wModeCurrent == WMODE_COFFEE) {
+    targetTemperature = coffeeTemperature;
+    TurnOffRelay(PIN_RELAY_PUMP);
+    TurnOffRelay(PIN_RELAY_VALVE);
+
+    if (IsSwitchOn(PIN_SWITCH_STEAM)) {
+      wModeCurrent = WMODE_STEAM;
+    }
+    if (IsSwitchOn(PIN_SWITCH_BREW)) {
+      wModeCurrent = WMODE_BREWING;
+      brewStartTime = millis();
+    }
+  }
+
+  if (wModeCurrent == WMODE_STEAM) {
+    targetTemperature = steamTemperature;
+    TurnOffRelay(PIN_RELAY_PUMP);
+    TurnOffRelay(PIN_RELAY_VALVE);
+
+    if (!IsSwitchOn(PIN_SWITCH_STEAM)) {
+      wModeCurrent = WMODE_COFFEE;
+    }
+  }
+
+  if (wModeCurrent == WMODE_BREWING) {
+    targetTemperature = coffeeTemperature;
+    TurnOnRelay(PIN_RELAY_PUMP);
+    TurnOnRelay(PIN_RELAY_VALVE);
+
+    if (!IsSwitchOn(PIN_SWITCH_BREW)) {
+      wModeCurrent = WMODE_COFFEE;
+    }
+
+    if (brewStartTime + brewDuration < millis()) {
+      wModeCurrent = WMODE_BREWING_FINISHED;
+      lcd.clear();
+    }
+  }
+
+  if (wModeCurrent == WMODE_BACKFLUSH) {
+    if (backFlushCycleDuration + backFlushCurrentCycleStart < millis()) {
+      backFlushCurrentCycle++;
+      backFlushCurrentCycleStart = millis();
+    }
+
+    if (backFlushCurrentCycle % 2 == 0) {
+      TurnOnRelay(PIN_RELAY_PUMP);
+      TurnOnRelay(PIN_RELAY_VALVE);
+    } else {
+      TurnOffRelay(PIN_RELAY_PUMP);
+      TurnOffRelay(PIN_RELAY_VALVE);
+    }
+    if (IsButtonPushed(PIN_BUTTON_SET) || backFlushCurrentCycle >= backFlushCycles * 2 - 1) {
+      wModeCurrent = WMODE_COFFEE;
+      backFlushCurrentCycle = 0;
+    }
+  }
+
+  if (wModeCurrent == WMODE_BREWING_FINISHED) {
+    targetTemperature = coffeeTemperature;
+    TurnOffRelay(PIN_RELAY_PUMP);
+    TurnOffRelay(PIN_RELAY_VALVE);
+
+    if (!IsSwitchOn(PIN_SWITCH_BREW)) {
+      wModeCurrent = WMODE_COFFEE;
+    }
+  }
+}
+
 void ProcessButtons() {
 
   if (IsButtonPushed(PIN_BUTTON_MODE)) {

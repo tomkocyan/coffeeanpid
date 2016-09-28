@@ -1,96 +1,75 @@
-//https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library/blob/master/LiquidCrystal_I2C.h
-
 void RenderDisplay() {
+
+  lcd.setCursor(0, 0);
+
   switch (dModeCurrent) {
     case DMODE_HOME:
-      RenderDebug();
+      RenderTemperature();
+      lcd.setCursor(0, 1);
       RenderWorkMode();
       break;
 
     case DMODE_COFFEE_TEMP:
       RenderMenuTitle();
+      lcd.setCursor(0, 1);
       RenderCoffeeTemperature();
       break;
 
     case DMODE_STEAM_TEMP:
       RenderMenuTitle();
+      lcd.setCursor(0, 1);
       RenderSteamTemperature();
       break;
 
     case DMODE_BACKFLUSH:
+      RenderMenuTitle();
+      lcd.setCursor(0, 1);
       RenderBackflush();
       break;
 
     case DMODE_BTN_DEBUG:
+      RenderMenuTitle();
+      lcd.setCursor(0, 1);
       RenderBtnDebug();
       break;
 
     case DMODE_TMP_DEBUG:
       RenderTmpDebug();
       break;
-
-
   }
-
-  //RenderTime();
-  //RenderTemperature();
-  //RenderWorkMode();
-
-  //display.display();
 }
 
-void RenderDebug() {
-  lcd.setCursor(0, 0);
-  //lcd.print("Home");
-
-
-  lcd.setCursor(0, 1);
+void RenderTemperature() {
   if (currentTemperature < 100) lcd.print(" ");
   lcd.print(currentTemperature);
-
   lcd.print(" => ");
-
   lcd.print((int)targetTemperature);
   if (targetTemperature < 100) lcd.print(" ");
-
   lcd.setCursor(10, 0);
+
   if (wModeCurrent == WMODE_BREWING) {
     lcd.print(" ");
     lcd.print( (1.0 * millis() - brewStartTime) / 1000 );
   }
-  //brewStartTime + brewDuration
 }
 
 
 void RenderMenuTitle() {
-  lcd.setCursor(0, 0);
   lcd.print("SETTINGS");
 }
 
 void RenderCoffeeTemperature() {
-  lcd.setCursor(0, 1);
   lcd.print("> Coffee: ");
   lcd.print((int)coffeeTemperature);
 }
 
 void RenderSteamTemperature() {
-  lcd.setCursor(0, 1);
   lcd.print("> Steam: ");
   lcd.print((int)steamTemperature);
 }
 
-
-void RenderProgressBar(float percent) {
-  /*
-  display.drawRect(0, 45, 128, 10, WHITE);
-  display.fillRect(0, 45, (int)(128 * percent / 100), 10, WHITE);*/
-}
-
 void RenderBtnDebug() {
-  //lcd.clear();
-  lcd.setCursor(0, 0);
   lcd.print("SWITCH TEST");
-  lcd.setCursor(0, 1);
 
   if (IsSwitchOn(PIN_SWITCH_BREW)) {
     lcd.print("BREW ");
@@ -99,15 +78,15 @@ void RenderBtnDebug() {
     lcd.print("---- ");
   }
 
-  if (IsSwitchOn(PIN_SWITCH_STEAM)) {
-    lcd.print("STEAM ");
+  if (IsSwitchOn(PIN_SWITCH_WATER)) {
+    lcd.print("WATER ");
   } else
   {
     lcd.print("----- ");
   }
 
-  if (IsSwitchOn(PIN_SWITCH_WATER)) {
-    lcd.print("WATER ");
+  if (IsSwitchOn(PIN_SWITCH_STEAM)) {
+    lcd.print("STEAM ");
   } else
   {
     lcd.print("----- ");
@@ -115,8 +94,6 @@ void RenderBtnDebug() {
 }
 
 void RenderTmpDebug() {
-  //lcd.clear();
-  lcd.setCursor(0, 0);
   lcd.print("TEMPER. DEBUG");
   lcd.setCursor(0, 1);
 
@@ -129,9 +106,7 @@ void RenderTmpDebug() {
 
 
 void RenderBackflush() {
-  lcd.setCursor(0, 0);
-  lcd.print("BACKFLUSH");
-  lcd.setCursor(0, 1);
+  lcd.print("BACKFLUSH ");
 
   if (wModeCurrent == WMODE_COFFEE) {
     lcd.print("START?");
@@ -140,27 +115,13 @@ void RenderBackflush() {
 
   lcd.print((backFlushCurrentCycle / 2) + 1);
   lcd.print("/");
-  lcd.println(backFlushCycles);
+  lcd.print(backFlushCycles);
   lcd.print("   ");
-}
-
-
-void RenderButton(int pin, char* text) {
-  /*
-  if (IsSwitchOn(pin)) {
-    display.setTextColor(BLACK, WHITE);
-  }
-  display.print(text);
-  display.setTextColor(WHITE, BLACK);
-  */
 }
 
 void RenderTime() {
   byte second, minute, hour, dayOfWeek, dayOfMonth, month, year;
   ReadDS3231time(&second, &minute, &hour, &dayOfWeek, &dayOfMonth, &month, &year);
-
-
-  lcd.setCursor(0, 0);
   lcd.print(hour);
   lcd.print(":");
   if (minute < 10) lcd.print("0");
@@ -168,23 +129,9 @@ void RenderTime() {
   lcd.print(":");
   if (second < 10) lcd.print("0");
   lcd.print(second);
-
-  /*
-  display.setTextSize(1);
-  display.setTextColor(WHITE);
-  display.setCursor(0, 57);
-  display.print(hour);
-  display.print(":");
-  if (minute < 10) display.print("0");
-  display.print(minute);
-  display.print(":");
-  if (second < 10) display.print("0");
-  display.print(second);
-  */
 }
 
 void RenderWorkMode() {
-  lcd.setCursor(0, 0);
   switch (wModeCurrent) {
     case WMODE_COFFEE:
       lcd.print("COFFEE ");
