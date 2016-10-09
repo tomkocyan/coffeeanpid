@@ -53,13 +53,13 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 /* Variables */
 double currentTemperature = 100;
-double coffeeTemperature = 100;
-double steamTemperature = 140;
+double coffeeTemperature = 92;
+double steamTemperature = 145;
 double targetTemperature = 0;
 int pwmInterval = 0;
 
 /* Initial modes */
-int dModeCurrent = DMODE_TMP_DEBUG;
+int dModeCurrent = DMODE_HOME;
 int dModeCount = 6;
 int wModeCurrent = WMODE_COFFEE;
 int hModeCurrent = 0;
@@ -88,7 +88,7 @@ void setup() {
   //relays
   pinMode(PIN_SSR_PUMP, OUTPUT);
   pinMode(PIN_SSR_VALVE, OUTPUT);
-  Timer3.initialize(500000);
+  Timer3.initialize(1000000);
 
   //buttons
   pinMode(PIN_BUTTON_MODE, INPUT);

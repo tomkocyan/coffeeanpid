@@ -47,7 +47,7 @@ void RenderTemperature() {
 
   if (wModeCurrent == WMODE_BREWING) {
     lcd.print(" ");
-    lcd.print( (1.0 * millis() - brewStartTime) / 1000 );
+    lcd.print( (int)((1.0 * millis() - brewStartTime) / 1000) );
   }
 }
 
