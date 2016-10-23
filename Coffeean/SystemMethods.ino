@@ -22,13 +22,16 @@ void ManageState() {
 
     if (IsSwitchOn(PIN_SWITCH_STEAM)) {
       wModeCurrent = WMODE_STEAM;
+      lcd.clear();
     }
     if (IsSwitchOn(PIN_SWITCH_BREW)) {
       wModeCurrent = WMODE_BREWING;
+      lcd.clear();
       brewStartTime = millis();
     }
     if (IsSwitchOn(PIN_SWITCH_WATER)) {
       wModeCurrent = WMODE_WATER;
+      lcd.clear();
     }
   }
 
@@ -59,6 +62,7 @@ void ManageState() {
 
     if (!IsSwitchOn(PIN_SWITCH_BREW)) {
       wModeCurrent = WMODE_COFFEE;
+      lcd.clear();
     }
 
     if (brewStartTime + brewDuration < millis()) {
