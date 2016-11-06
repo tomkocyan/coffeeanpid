@@ -14,7 +14,22 @@ bool IsSwitchOn(int pin) {
   return false;
 }
 
-void ManageState() {  
+void LoadEEPROMData() {
+  coffeeTemperature = EEPROM.read(EEPROM_COFFEE);
+  if (coffeeTemperature < 50 || coffeeTemperature > 150) {
+    coffeeTemperature = 95;
+  }
+  steamTemperature = EEPROM.read(EEPROM_STEAM);
+  if (steamTemperature < 50 || steamTemperature > 170) {
+    steamTemperature = 140;
+  }
+}
+
+void SaveEEPROMData(int address, int value) {
+  EEPROM.write(address, value);
+}
+
+void ManageState() {
   if (wModeCurrent == WMODE_COFFEE) {
     targetTemperature = coffeeTemperature;
     TurnOffRelay(PIN_SSR_PUMP);
@@ -119,14 +134,17 @@ void ProcessButtons() {
   if (dModeCurrent == DMODE_COFFEE_TEMP) {
     if (IsButtonPushed(PIN_BUTTON_UP)) {
       coffeeTemperature++;
+      SaveEEPROMData(EEPROM_COFFEE, coffeeTemperature);
       lcd.clear();
     }
     if (IsButtonPushed(PIN_BUTTON_DOWN)) {
       coffeeTemperature--;
+      SaveEEPROMData(EEPROM_COFFEE, coffeeTemperature);
       lcd.clear();
     }
     if (IsButtonPushed(PIN_BUTTON_SET)) {
       coffeeTemperature = 100;
+      SaveEEPROMData(EEPROM_COFFEE, coffeeTemperature);
       lcd.clear();
     }
   }
@@ -134,14 +152,17 @@ void ProcessButtons() {
   if (dModeCurrent == DMODE_STEAM_TEMP) {
     if (IsButtonPushed(PIN_BUTTON_UP)) {
       steamTemperature++;
+      SaveEEPROMData(EEPROM_STEAM, steamTemperature);
       lcd.clear();
     }
     if (IsButtonPushed(PIN_BUTTON_DOWN)) {
       steamTemperature--;
+      SaveEEPROMData(EEPROM_STEAM, steamTemperature);
       lcd.clear();
     }
     if (IsButtonPushed(PIN_BUTTON_SET)) {
       steamTemperature = 140;
+      SaveEEPROMData(EEPROM_STEAM, steamTemperature);
       lcd.clear();
     }
   }

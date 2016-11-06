@@ -1,5 +1,4 @@
 void RenderDisplay() {
-
   lcd.setCursor(0, 0);
 
   switch (dModeCurrent) {
@@ -38,19 +37,22 @@ void RenderDisplay() {
 }
 
 void RenderTemperature() {
+  if (millis() - lastDisplayRefresh < 1000) return;
+  
   if (currentTemperature < 100) lcd.print(" ");
   lcd.print(currentTemperature);
   lcd.print(" => ");
   lcd.print((int)targetTemperature);
   if (targetTemperature < 100) lcd.print(" ");
-  lcd.setCursor(10, 0);
 
   if (wModeCurrent == WMODE_BREWING) {
+    lcd.setCursor(10, 0);
     lcd.print(" ");
     lcd.print( (int)((1.0 * millis() - brewStartTime) / 1000) );
   }
+  
+  lastDisplayRefresh = millis();
 }
-
 
 void RenderMenuTitle() {
   lcd.print("SETTINGS");
@@ -95,14 +97,12 @@ void RenderBtnDebug() {
 void RenderTmpDebug() {
   lcd.print("TEMPER. DEBUG");
   lcd.setCursor(0, 1);
-
   lcd.print("P/");
   lcd.print(pwmInterval);
   lcd.print("  T/");
   lcd.print(currentTemperature);
   lcd.print("   ");
 }
-
 
 void RenderBackflush() {
   lcd.print("BACKFLUSH ");

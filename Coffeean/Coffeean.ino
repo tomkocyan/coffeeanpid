@@ -43,48 +43,58 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);
 #define DMODE_BACKFLUSH 5
 
 /* Work modes */
-#define WMODE_SLEEP 0
-#define WMODE_COFFEE 1
-#define WMODE_STEAM 2
-#define WMODE_BACKFLUSH 3
-#define WMODE_BREWING 4
-#define WMODE_BREWING_FINISHED 5
-#define WMODE_WATER 6
+#define   WMODE_SLEEP 0
+#define   WMODE_COFFEE 1
+#define   WMODE_STEAM 2
+#define   WMODE_BACKFLUSH 3
+#define   WMODE_BREWING 4
+#define   WMODE_BREWING_FINISHED 5
+#define   WMODE_WATER 6
 
 /* Variables */
-double currentTemperature = 100;
-double coffeeTemperature = 92;
-double steamTemperature = 145;
-double targetTemperature = 0;
-int pwmInterval = 0;
+double    currentTemperature = 100;
+double    coffeeTemperature = 92;
+double    steamTemperature = 140;
+double    targetTemperature = 0;
+int       pwmInterval = 0;
 
 /* Initial modes */
-int dModeCurrent = DMODE_HOME;
-int dModeCount = 6;
-int wModeCurrent = WMODE_COFFEE;
-int hModeCurrent = 0;
+int       dModeCurrent = DMODE_HOME;
+int       dModeCount = 6;
+int       wModeCurrent = WMODE_COFFEE;
+int       hModeCurrent = 0;
 
 /* Temperature variables */
-double rawTemperature = 0;
-long temperatureMeasurementInterval = 1000;
-long lastTemperatureMeasurement = 0;
+double    rawTemperature = 0;
+long      temperatureMeasurementInterval = 1000;
+long      lastTemperatureMeasurement = 0;
 const int tempArraySize = 6;
-double tempArray [tempArraySize];
-int tempArrayPointer = 0;
-double tempArrayAvg = 0;
-double tempArraySD = 0;
+double    tempArray [tempArraySize];
+int       tempArrayPointer = 0;
+double    tempArrayAvg = 0;
+double    tempArraySD = 0;
+
+/* Display variables */
+long      lastDisplayRefresh = 0;
 
 /* Brew variables */
-long brewStartTime = 0;
-int brewDuration = 30000;
+long      brewStartTime = 0;
+int       brewDuration = 30000;
 
 /* Backflush variables */
 const int backFlushCycles = 10;
-int backFlushCurrentCycle = 0;
+int       backFlushCurrentCycle = 0;
 const int backFlushCycleDuration = 10000;
-long backFlushCurrentCycleStart = 0;
+long      backFlushCurrentCycleStart = 0;
+
+/* Addresses for storing in EEPROM */
+const int EEPROM_COFFEE = 0;
+const int EEPROM_STEAM = 1;
 
 void setup() {
+  //loading stored values from EEPROM
+  LoadEEPROMData();
+    
   //relays
   pinMode(PIN_SSR_PUMP, OUTPUT);
   pinMode(PIN_SSR_VALVE, OUTPUT);
@@ -121,7 +131,15 @@ void setup() {
   //display
   lcd.init(); // initialize the lcd
   lcd.backlight();
+  lcd.setCursor(0,0);
   lcd.print("COFFEAN PID!");
+  lcd.setCursor(0,1);
+  lcd.print("www.kocyan.cz");
+
+  for (int i = 0; i < tempArraySize; i++) {
+    ReadTemperature();
+    delay(temperatureMeasurementInterval + 10);
+  }
   lcd.clear();
 
   //first time setup
