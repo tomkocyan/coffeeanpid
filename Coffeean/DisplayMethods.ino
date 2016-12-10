@@ -1,6 +1,12 @@
 void RenderDisplay() {
   lcd.setCursor(0, 0);
-
+  
+  if (millis() > displaySwitchOffTime + lastKeyHitTime) {
+    lcd.noBacklight();
+  } else {
+    lcd.backlight();
+  }
+  
   switch (dModeCurrent) {
     case DMODE_HOME:
       RenderTemperature();

@@ -1,6 +1,7 @@
 bool IsButtonPushed(int pin) {
   if (digitalRead(pin) == LOW) {
     while (digitalRead(pin) == LOW) {}
+    lastKeyHitTime = millis();
     return true;
   }
   return false;
@@ -9,6 +10,7 @@ bool IsButtonPushed(int pin) {
 bool IsSwitchOn(int pin) {
   if (digitalRead(pin) == LOW) {
     //while (digitalRead(pin) == LOW) {}
+    lastKeyHitTime = millis();
     return true;
   }
   return false;

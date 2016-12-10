@@ -76,6 +76,8 @@ double    tempArraySD = 0;
 
 /* Display variables */
 long      lastDisplayRefresh = 0;
+long      lastKeyHitTime = 0;
+int       displaySwitchOffTime = 30 * 1000;
 
 /* Brew variables */
 long      brewStartTime = 0;
@@ -147,6 +149,8 @@ void setup() {
 
   //serial init
   Serial.begin(9600);
+  
+  lastKeyHitTime = millis();
 }
 
 // the loop function runs over and over again forever
