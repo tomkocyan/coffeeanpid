@@ -40,15 +40,18 @@ void ManageState() {
     if (IsSwitchOn(PIN_SWITCH_STEAM)) {
       wModeCurrent = WMODE_STEAM;
       lcd.clear();
+      lastDisplayRefresh = 0;
     }
     if (IsSwitchOn(PIN_SWITCH_BREW)) {
       wModeCurrent = WMODE_BREWING;
       lcd.clear();
       brewStartTime = millis();
+      lastDisplayRefresh = 0;
     }
     if (IsSwitchOn(PIN_SWITCH_WATER)) {
       wModeCurrent = WMODE_WATER;
       lcd.clear();
+      lastDisplayRefresh = 0;
     }
   }
 
@@ -111,9 +114,16 @@ void ManageState() {
     targetTemperature = coffeeTemperature;
     TurnOffRelay(PIN_SSR_PUMP);
     TurnOffRelay(PIN_SSR_VALVE);
-
+    
+    if (millis() % 500 > 250 ) {
+      lcd.noBacklight();
+    } else {
+      lcd.backlight();
+    }
+    
     if (!IsSwitchOn(PIN_SWITCH_BREW)) {
       wModeCurrent = WMODE_COFFEE;
+      lcd.backlight();
     }
   }
 }

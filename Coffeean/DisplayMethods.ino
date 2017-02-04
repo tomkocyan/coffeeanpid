@@ -1,10 +1,12 @@
 void RenderDisplay() {
   lcd.setCursor(0, 0);
   
-  if (millis() > displaySwitchOffTime + lastKeyHitTime) {
-    lcd.noBacklight();
-  } else {
-    lcd.backlight();
+  if (wModeCurrent != WMODE_BREWING_FINISHED) {
+    if (millis() > displaySwitchOffTime + lastKeyHitTime) {
+      lcd.noBacklight();
+    } else {
+      lcd.backlight();
+    }
   }
   
   switch (dModeCurrent) {
@@ -139,25 +141,25 @@ void RenderTime() {
 void RenderWorkMode() {
   switch (wModeCurrent) {
     case WMODE_COFFEE:
-      lcd.print("COFFEE ");
+      lcd.print("ESPRESSO   ");
       break;
     case WMODE_STEAM:
-      lcd.print("STEAM  ");
+      lcd.print("HORKA PARA ");
       break;
     case WMODE_SLEEP:
-      lcd.print("SLEEP  ");
+      lcd.print("SLEEP      ");
       break;
     case WMODE_BACKFLUSH:
-      lcd.print("FLUSH  ");
+      lcd.print("PROPLACH   ");
       break;
     case WMODE_BREWING:
-      lcd.print("BREW   ");
+      lcd.print("ESPRESSO   ");
       break;
     case WMODE_BREWING_FINISHED:
-      lcd.print("B.FIN.");
+      lcd.print("HOTOVO     ");
       break;
     case WMODE_WATER:
-      lcd.print("WATER ");
+      lcd.print("HORKA VODA ");
       break;
   }
 }
